@@ -1,48 +1,19 @@
-#[derive(Debug)] // 格式化方式
-struct Rectangle {
-    width: u32,
-    length: u32,
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
 }
 
-impl Rectangle {
-    fn area(&self) -> u32 {
-        self.width * self.length
-    }
-}
-
-impl Rectangle {
-    fn can_hold(&self, other: &Rectangle) -> bool {
-        self.width > other.width && self.length > other.length
-    }
-
-    fn square(size: u32) -> Rectangle {
-        Rectangle {
-            width: size,
-            length: size
-        }
-    }
+impl Message {
+    fn call(&self) {}
 }
 
 fn main() {
-    let rect1 = Rectangle {
-        width: 30,
-        length: 50,
-    };
-    let rect2 = Rectangle {
-        width: 10,
-        length: 40,
-    };
-    let rect3 = Rectangle {
-        width: 35,
-        length: 55,
-    };
+    let q = Message::Quit;
+    let m = Message::Move { x: 12, y: 24 };
+    let w = Message::Write(String::from("Hello"));
+    let c = Message::ChangeColor(0, 255, 255);
 
-    println!("{}", &rect1.area());
-
-    println!("{}", &rect1.can_hold(&rect2));
-    println!("{}", &rect1.can_hold(&rect3));
-
-    let s = Rectangle::square(20);
-    println!("{:#?}", s);
-
+    m.call();
 }
