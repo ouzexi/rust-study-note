@@ -1,14 +1,9 @@
 fn main() {
-    println!("Hello, world!");
+    let tup: (i32, f64, u8) = (500, 6.4, 1);
 
-    let mut x = 5;
-    x = x + 1;
-    x = x * 2;
-    println!("x:{}", x);
+    let (x, y, z) = tup; // 解构
 
-    // shadowing 隐藏
-    let spaces = "    ";
-    let spaces = spaces.len();
+    println!("{}, {}, {}", tup.0, tup.1, tup.2);
 
-    println!("{}", spaces);
+    println!("{}, {}, {}", x, y, z);
 }
