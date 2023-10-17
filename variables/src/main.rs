@@ -1,25 +1,22 @@
 fn main() {
-    let mut counter = 0;
+    let my_string = String::from("Hello world");
+    let word_index = first_word(&my_string[..]);
 
-    let result = loop {
-        counter += 1;
+    println!("{}", word_index);
 
-        if counter == 10 {
-            break counter * 2;
+    let my_string_literal = "hello world";
+    let word_index = first_word(my_string_literal);
+
+    println!("{}", word_index);
+}
+
+fn first_word(s: &str) -> &str { // &str是字符串切片引用
+    let bytes = s.as_bytes();
+
+    for(i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
         }
-    };
-
-    println!("The result is: {}", result); // 20
-
-    //
-    let a = [10, 20, 30, 40, 50];
-
-    for element in a.iter() {
-        println!("the value is： {}", element);
     }
-
-    for number in (1..4).rev() { // ..是Range，1到3 rev是反转
-        println!("{}!", number);
-    }
-    println!("LIFTOFF!");
+    &s[..]
 }
