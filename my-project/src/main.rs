@@ -1,9 +1,11 @@
-mod front_of_house;
+fn main() {
+    let mut v = vec![100, 32, 57];
 
-pub use crate::front_of_house::hosting;
+    for i in &mut v {
+        *i += 50;
+    }
 
-pub fn eat_at_restaurant() {
-    hosting::add_to_waitlist();
-    hosting::add_to_waitlist();
-    hosting::add_to_waitlist();
+    for i in v {
+        println!("{}", i);
+    }
 }
