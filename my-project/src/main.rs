@@ -1,21 +1,42 @@
-struct Point<T, U> {
-    x: T,
-    y: U,
+pub trait Summary {
+    fn summarize(&self) -> String {     // trait中方法的默认实现
+        String::from("(Read more...)")
+    }
 }
 
-impl<T, U> Point<T, U> {
-    fn mixup<V, W>(self, other: Point<V, W>) -> Point<T, W> {
-        Point {
-            x: self.x,
-            y: other.y,
-        }
+pub struct  NewsArticle {
+    pub headline: String,
+    pub location: String,
+    pub author: String,
+    pub content: String,
+}
+
+impl Summary for NewsArticle {
+    /* fn summarize(&self) -> String {
+        format!("{}, by {} ({})", self.headline, self.author, self.location)
+    } */
+}
+
+pub struct Tweet {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub retweet: bool,
+}
+
+impl Summary for Tweet {
+    fn summarize(&self) -> String {
+        format!("{}: {}", self.username, self.content)
     }
 }
 
 fn main() {
-    let p1 = Point { x: 5, y: 4 };
-    let p2 = Point { x: "Hello", y: 'c' };
-    let p3 = p1.mixup(p2);
+    let article = NewsArticle {
+        headline: String::from("headline"),
+        content: String::from("contenttttt"),
+        author: String::from("author"),
+        location: String::from("location"),
+    };
 
-    println!("p3.x = {}, p3.y = {}", p3.x, p3.y);
+    print!("1 new tweet: {}", article.summarize())
 }
