@@ -1,38 +1,41 @@
-use std::{fs::File, io::ErrorKind};
+use std::fs::File;
+use std::io;
+use std::io::Read;
+use std::error::Error;
 
-fn main() {
+fn read_username_from_file() -> Result<String, io::Error> {
     let f = File::open("hello.txt");
 
-    let f = match f {
+    let mut f = match f {
         Ok(file) => file,
-        Err(error) => {
-            panic!("Error opening file {:?}", error);
-        }
+        Err(e) => return Err(e),
     };
 
-
-    // 使用Result
-    let f1 = File::open("hello.txt");
-
-    let f1 = match f1 {
-        Ok(file) => file,
-        Err(error) => match error.kind() {
-            ErrorKind::NotFound => match File::create("hello.text") {
-                Ok(fc) => fc,
-                Err(e) => panic!("Error creating file {:?}", e),
-            },
-            other_error => panic!("Error opening the file:{:?}", other_error),
-        }
-    };
-
-    // 使用unwrap方法代替Result
-    let f2 = File::open("hello.txt").unwrap_or_else(|error| {
-        if error.kind() == ErrorKind::NotFound {
-            File::create("hello.txt").unwrap_or_else(|error| {
-                panic!("Error creating file: {:?}", error);
-            })
-        } else {
-            panic!("Error opening file: {:?}", error);
-        }
-    });
+    let mut s = String::new();
+    match f.read_to_string(&mut s) {
+        Ok(_) => Ok(s),
+        Err(e) => Err(e),
+    }
 }
+
+// 使用?运算符，与上面方法效果一样
+fn read_username_from_file_2() -> Result<String, io::Error> {
+    let mut f = File::open("hello.txt")?;
+    let mut s = String::new();
+    f.read_to_string(&mut s)?;
+    Ok(s)
+}
+
+// /?运算符还可以链式调用
+fn read_username_from_file_3() -> Result<String, io::Error> {
+    let mut s = String::new();
+    File::open("hello.txt")?.read_to_string(&mut s)?;
+    Ok(s)
+}
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let f = File::open("hello.txt")?;
+    Ok(())
+}
+
+// Box<dyn Error>是trait对象，可以理解为 任何可能的错误类型
