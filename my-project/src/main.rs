@@ -1,41 +1,30 @@
-use std::fs::File;
-use std::io;
-use std::io::Read;
-use std::error::Error;
+// 创建新的类型，把验证逻辑放在构造实例的函数里
+pub struct Guess {
+    value: i32,
+}
 
-fn read_username_from_file() -> Result<String, io::Error> {
-    let f = File::open("hello.txt");
+impl Guess {
+    pub fn new(value: i32) -> Guess {
+        if value < 1 || value > 100 {
+            panic!("Guess value must be between 1 and 100, got {}", value);
+        }
 
-    let mut f = match f {
-        Ok(file) => file,
-        Err(e) => return Err(e),
-    };
+        Guess { value }
+    }
 
-    let mut s = String::new();
-    match f.read_to_string(&mut s) {
-        Ok(_) => Ok(s),
-        Err(e) => Err(e),
+    pub fn value(&self) -> i32 {
+        self.value
     }
 }
 
-// 使用?运算符，与上面方法效果一样
-fn read_username_from_file_2() -> Result<String, io::Error> {
-    let mut f = File::open("hello.txt")?;
-    let mut s = String::new();
-    f.read_to_string(&mut s)?;
-    Ok(s)
-}
+fn main() {
+    loop {
+        let guess = "32";
+        let guess: i32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
 
-// /?运算符还可以链式调用
-fn read_username_from_file_3() -> Result<String, io::Error> {
-    let mut s = String::new();
-    File::open("hello.txt")?.read_to_string(&mut s)?;
-    Ok(s)
+        let guess = Guess::new(guess);
+    }
 }
-
-fn main() -> Result<(), Box<dyn Error>> {
-    let f = File::open("hello.txt")?;
-    Ok(())
-}
-
-// Box<dyn Error>是trait对象，可以理解为 任何可能的错误类型
