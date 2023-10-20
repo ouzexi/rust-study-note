@@ -1,5 +1,5 @@
-pub fn add_two(a: i32) -> i32 {
-    a + 2
+pub fn greeting(name: &str) -> String {
+    format!("Hello!")
 }
 
 #[cfg(test)]
@@ -7,8 +7,10 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_adds_two() {
-        // assert_ne!(5, add_two(2));
-        assert_eq!(5, add_two(2));
+    fn greetings_contain_name() {
+        let result = greeting("Carol");
+        assert!(
+            result.contains("Carol"),
+            "Greeting didn't contain name, value was '{}'", result); // 第二个参数是自定义错误信息
     }
 }
