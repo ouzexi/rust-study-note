@@ -1,19 +1,14 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+pub fn add_two(a: i32) -> i32 {
+    a + 2
 }
-// 运行cargo test命令
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn exploration() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-
-    #[test]
-    fn another() {
-        panic!("Make this test fail");
+    fn it_adds_two() {
+        // assert_ne!(5, add_two(2));
+        assert_eq!(5, add_two(2));
     }
 }
