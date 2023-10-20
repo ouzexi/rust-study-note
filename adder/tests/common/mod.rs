@@ -1,0 +1,1 @@
+pub fn setup() {} // tests下的子目录如common的文件不会被当作crate编译
