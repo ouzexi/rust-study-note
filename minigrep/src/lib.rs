@@ -101,4 +101,13 @@ Trust me.";
         assert_eq!(v1_iter.next(), Some(&2));
         assert_eq!(v1_iter.next(), Some(&3));
     }
+
+    #[test]
+    fn iterator_sum() {
+        let v1: Vec<i32> = vec![1, 2, 3];
+
+        let v2: Vec<_> = v1.iter().map(|x| x + 1).collect(); // collect和sum都是消耗性适配器
+
+        assert_eq!(v2, vec![2, 3, 4]);
+    }
 }
