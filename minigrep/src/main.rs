@@ -1,7 +1,10 @@
 use std::{thread, time::Duration};
 
 fn main() {
+    let example_closure = |x| x; // 相当于js的(x) => x;
 
+    let s = example_closure(String::from("hello"));
+    let n = example_closure(5); // 这个会报错，因为上面已经推断x为String类型了
 }
 
 fn generate_workout(intensity: u32, random_number: u32) {
