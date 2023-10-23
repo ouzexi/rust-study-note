@@ -28,7 +28,17 @@ impl<T> Cacher<T> where T: Fn(u32) -> u32 {
 }
 
 fn main() {
-    generate_workout(24, 4);
+    // generate_workout(24, 4);
+
+    let x = vec![1, 2, 3];
+
+    let equal_to_x = move |z| z == x;
+
+    // println!("can't use x here: {:?}", x); // 因为move将x的所有权移到匿名函数里了，所有匿名函数外不能再使用x了
+
+    let y = vec![1, 2, 3];
+
+    assert!(equal_to_x(y));
 }
 
 fn generate_workout(intensity: u32, random_number: u32) {
