@@ -1,18 +1,24 @@
-use minigrep::Config;
-use std::env;
-use std::process;
-// cargo run abcd readme.txt 实现简易的grep命令，在readme.txt查找adbc字符串
+use std::{thread, time::Duration};
+
 fn main() {
-    let args: Vec<String> = env::args().collect();
 
-    let config = Config::new(&args).unwrap_or_else(|err| {  // |err|是闭包
-        eprintln!("Problem parsing arguments: {}", err);
-        process::exit(1); // 退出程序
-    });
-
-    if let Err(e) = minigrep::run(config) {
-        eprintln!("Application error: {}", e);
-        process::exit(1);
-    }
 }
 
+fn generate_workout(intensity: u32, random_number: u32) {
+    let expensive_closure = |num| { // 匿名函数，参数要用||包裹
+        println!("calculating slowly...");
+        thread::sleep(Duration::from_secs(2)); // 模拟耗时操作
+        num
+    };
+
+    if intensity < 25 {
+        println!("Today, do {} pushups!", expensive_closure(intensity)); // 使用闭包
+        println!("Next, do {} situps!", expensive_closure(intensity));
+    } else {
+        if random_number == 3 {
+            println!("Take a break today! Remember to stay hydrated!"); // 这里就不需要调用耗时函数了
+        } else {
+            println!("Today, run for {} minutes!", expensive_closure(intensity));
+        }
+    }
+}
