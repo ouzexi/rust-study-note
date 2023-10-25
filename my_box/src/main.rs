@@ -15,11 +15,18 @@ impl<T> Deref for MyBox<T> {  // 要使用*y引用，要实现Deref trait（类�
         &self.0 // 把self元组的第0个元素返回
     }
 }
-fn main() {
-    let x = 5;
-    // let y = &x;
-    let y = MyBox::new(x); // 用MyBox新建一个y，相当于获取了x的引用
 
-    assert_eq!(5, x);
-    assert_eq!(5, *y);
+fn hello(name: &str) {
+    println!("Hello, {}", name);
+}
+
+fn main() {
+    let m = MyBox::new(String::from("Rust"));
+
+    // hello函数接收参数的类型是字符串切片的引用，但是这里可以传MyBox<String>的引用
+    // 是因为Deref Trait自动拆箱的过程
+    // &m = &MyBox<String> -> deref &String -> deref &str 
+    hello(&m);
+
+    hello("Rust");
 }
