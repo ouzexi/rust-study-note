@@ -1,25 +1,23 @@
-use std::sync::mpsc;
+use std::sync::{Mutex, Arc};  // RefCell<T>可以修改Rc<T>里的内容，Mutex<T>可以修改Arc<T>里的内容
 use std::thread;
-use std::time::Duration;
-
+// Rc<T>和Arc<T>的api是一样的，但Arc可用户并发情景，Mutex有死锁风险
 fn main() {
-    let (tx, rx) = mpsc::channel();
+    let counter = Arc::new(Mutex::new(0)); // 共享counter，就可以在循环中的多个线程获取所有权
+    let mut handles = vec![];
 
-    thread::spawn(move || {
-        let vals = vec![
-            String::from("hi"),
-            String::from("from"),
-            String::from("the"),
-            String::from("thread"),
-        ];
+    for _ in 0..10 {
+        let counter = Arc::clone(&counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
 
-        for val in vals {
-            tx.send(val).unwrap();
-            thread::sleep(Duration::from_millis(1));  // 如果是发送多个值，会阻塞线程，看到接收者在等待
-        }
-    });
-
-    for received in rx {  // 这里使用循环解构，就不需要调用recv方法了
-        println!("Got: {}", received);
+            *num += 1;
+        });
+        handles.push(handle);
     }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
 }
