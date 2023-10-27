@@ -1,18 +1,12 @@
 use std::thread;
-use std::time::Duration;
 
 fn main() {
-    let handle = thread::spawn(|| {
-        for i in 1..10 {
-            println!("hi number {} from the spawned thread!", i);
-            thread::sleep(Duration::from_millis(1));
-        }
-    });
+    let v = vec![1, 2, 3];
+    let handle = thread::spawn(move || {
+        println!("Here's a vector: {:?}", v); // 线程的闭包里不能主线程的v，因为主线程有可能比线程先结束，此时v被释放了，所以线程里获取不到v
+    });                                       // 所以要在闭包函数前加上move关键字，将v的所有权交给线程
 
-    for i in 1..5 {
-        println!("hi number {} from the main thread!", i);
-        thread::sleep(Duration::from_millis(1));
-    }
+    // drop(v); 主动释放v，也会导致线程获取不到v
 
-    handle.join().unwrap(); // 该线程的返回值handle的join方法会等线程结束后才结束进程，否则主线程结束后就结束进程了
+    handle.join().unwrap();
 }
