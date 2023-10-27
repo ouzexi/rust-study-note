@@ -1,27 +1,41 @@
-pub trait Draw {
-    fn draw(&self);
+pub struct Post {
+    content: String,
 }
 
-pub struct Screen {
-    pub components: Vec<Box<dyn Draw>>, // Box<dyn Draw>是实现了Draw类型特性的类型，如Draw的子类型，而不能使用泛型，泛型只能限制一种类型
+pub struct DraftPost {
+    content: String,
 }
 
-impl Screen {
-    pub fn run(&self) {
-        for component in self.components.iter() {
-            component.draw();
+impl Post {
+    pub fn new() -> DraftPost {
+        DraftPost {
+            content: String::new(),
+        }
+    }
+    pub fn content(&self) -> &str {
+        &self.content
+    }
+}
+
+impl DraftPost {
+    pub fn add_text(&mut self, text: &str) {
+        self.content.push_str(text);
+    }
+    pub fn request_review(self) -> PengingReviewPost {
+        PengingReviewPost {
+            content: self.content,
         }
     }
 }
 
-pub struct Button {
-    pub width: u32,
-    pub height: u32,
-    pub label: String,
+pub struct PengingReviewPost {
+    content: String,
 }
 
-impl Draw for Button {
-    fn draw(&self) {
-        // 绘制一个按钮
+impl PengingReviewPost {
+    pub fn approve(self) -> Post {
+        Post {
+            content: self.content,
+        }
     }
 }
