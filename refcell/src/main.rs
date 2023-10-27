@@ -1,12 +1,15 @@
+use std::sync::mpsc;
 use std::thread;
 
 fn main() {
-    let v = vec![1, 2, 3];
-    let handle = thread::spawn(move || {
-        println!("Here's a vector: {:?}", v); // 线程的闭包里不能主线程的v，因为主线程有可能比线程先结束，此时v被释放了，所以线程里获取不到v
-    });                                       // 所以要在闭包函数前加上move关键字，将v的所有权交给线程
+    let (tx, rx) = mpsc::channel();
 
-    // drop(v); 主动释放v，也会导致线程获取不到v
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();  // 发送端的send方法发送数据
+        // println!("{}", val); 这里会报错了，因为val的所有权移交到主线程
+    });
 
-    handle.join().unwrap();
+    let received = rx.recv().unwrap(); // 接收端的recv方法接收数据
+    println!("Got: {}", received);
 }
