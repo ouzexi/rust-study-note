@@ -1,69 +1,53 @@
-use std::slice;
+// 1 在Trait定义中使用关联类型来指定占位类型
+pub trait Iterator {
+    type Item; // 关联类型
 
-fn split_at_mut(slice: &mut [i32], mid: usize) -> (&mut [i32], &mut [i32]) {
-    let len = slice.len();
-    let ptr = slice.as_mut_ptr();
-
-    assert!(mid <= len);
-
-    unsafe {
-        (
-            slice::from_raw_parts_mut(ptr, mid),
-            slice::from_raw_parts_mut(ptr.add(mid), len - mid),
-        )
-    }
-}
-
-extern "C" { // ABI
-    fn abs(input: i32) -> i32;
-}
-
-static mut COUNTER: u32 = 0;
-
-fn add_to_count(inc: u32) {
-    unsafe {
-        COUNTER += inc;
-    }
-}
-
-unsafe trait Foo {
-
-}
-
-unsafe impl Foo for i32 {
-    
+    fn next(&mut self) -> Option<Self::Item>;
 }
 
 fn main() {
-    // Unsafe Rust没有强制内存安全保证，可执行4个动作
-    // 1 解引用原始指针
-    let mut num = 5;
-    let r1 = &num as *const i32;
-    let r2 = &mut num as *mut i32;
-    unsafe {
-        println!("r1: {}", *r1);
-        println!("r2: {}", *r2);
-    }
+    println!("Hello, world!");
 
-
-    // 2 调用unsafe函数或方法
-    let address = 0x012345usize;
-    let r = address as *mut i32;
-
-    let slice: &[i32] = unsafe {
-        slice::from_raw_parts_mut(r, 10000) // 不安全，无法保证有10000个元素
-    };
-
-
-
-    unsafe {
-        println!("Absolute value of -3 according to C: {}", abs(-3));
-    }
-    // 3 访问或修改可变的静态变量
-    add_to_count(3);
-    unsafe {
-        println!("COUNTER: {}", COUNTER);
-    }
-
-    // 4 实现unsafe trait
+    // 完全限定语法-调用同名方法
+    let person = Human;
+    person.fly();
+    Pilot::fly(&person);
+    Wizard::fly(&person);
 }
+
+// 2 默认泛型参数和运算符重载
+// <PlaceholderType=ConcreteType>
+
+// 3 完全限定语法 如何调用同名方法
+trait Pilot {
+    fn fly(&self);
+}
+
+trait Wizard {
+    fn fly(&self);
+}
+
+struct Human;
+
+impl Pilot for Human {
+    fn fly(&self) {
+        println!("This is your captain speaking.");
+    }
+}
+
+impl Wizard for Human {
+    fn fly(&self) {
+        println!("Up!");
+    }
+}
+
+impl Human {
+    fn fly(&self) {
+        println!("*waving arms furiously*");
+    }
+}
+
+// 4 使用supertrait来要求trait附带其他trait的功能
+// 被一个trait简介依赖的trait也需要被实现
+
+// 5 使用newtype模式在外部类型上实现外部trait
